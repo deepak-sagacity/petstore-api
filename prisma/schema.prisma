@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pets      Pet[]
+
+  @@map("users")
+}
+
+model Pet {
+  id          String     @id @default(cuid())
+  name        String
+  type        PetType
+  age         Int
+  breed       String
+  description String?
+  ownerId     String
+  owner       User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  images      PetImage[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("pets")
+}
+
+model PetImage {
+  id       String @id @default(cuid())
+  filename String
+  path     String
+  petId    String
+  pet      Pet    @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@map("pet_images")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PetType {
+  DOG
+  CAT
+  BIRD
+  FISH
+  RABBIT
+  HAMSTER
+  OTHER
+}
