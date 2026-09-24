@@ -43,8 +43,12 @@ export class AuthService {
       throw new Error('JWT_SECRET is not defined');
     }
     
+    // const token = jwt.sign(payload, jwtSecret, {
+    //   expiresIn: process.env.JWT_EXPIRES_IN || '24h'
+    // });
+
     const token = jwt.sign(payload, jwtSecret, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '24h'
+      expiresIn: (process.env.JWT_EXPIRES_IN || '24h') as any,
     });
 
     return {
